@@ -1,0 +1,22 @@
+
+
+
+      BCF TRISB,2
+      MOVLW 0X05
+      MOVWF T0CON
+HERE  MOVLW 0X01
+      MOVWF TMR0H
+      MOVLW 0X08
+      MOVWF TMR0L
+      BCF INTCON,TMR0IF
+      CALL DEALY
+      BTG PORTB , 2
+      BRA HERE
+
+      ...........................
+
+ DEALY BSF T0CON,TMR0ON
+ AGAIN BTFSS INTCON,TMR0IF
+       BRA AGAIN
+       BCF T0CON,TMR0ON
+       RETURN     
