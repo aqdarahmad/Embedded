@@ -33,3 +33,44 @@
         BSF INTCON,GIE
 AGAIN   MOVFF PORTC , PORTD
         BRA AGAIN
+
+
+
+
+
+
+//Use Timer1 as a high-priority interrupt.
+//On every interrupt, toggle RB3 (generate a square wave).
+//In the main loop, continuously copy PORTA to PORTC.
+//Properly initialize the ports and Timer1.
+//Enable the interrupt and Timer1.     
+
+ 
+
+        BCF TRSISB , 3
+        CLRF TRISC
+        SETF TRISA
+        MOVLW 0X00H
+        MOVWF T1CON
+        MOVLW 0X3CH
+        MOVWF TMR1H
+        MOVWL 0XB0H
+        MOVWF TMR1L
+        BCF PIR1 , TMR1IF
+        BSF T1CON , TMR1ON
+        BSF INTCON,TMR1IE
+        BSF INTCON,GIE
+ AGAIN  MOVFF PORTA,PORTC
+ BRA    AGAIN
+
+ ORG 00X08
+ BTFSS PIE,TMR1IF
+ RETFIE
+ MOVLW 0X3CH
+ MOVWF TMR1H
+ MOVLW 0XB0H
+ MOVWF TMR1L
+ BTG PORTB , 3
+ BCF PIR1 , TMR1IF
+ RETFIE
+        BRA AGAIN
